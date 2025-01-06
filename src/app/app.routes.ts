@@ -8,7 +8,7 @@ export const routes: Routes = [
   },
   {
     path: 'home', loadComponent: () => import('./shareds/modules/home/home.component').then(m => m.HomeComponent),
-    canActivate: [authGuard],
+    // canActivate: [authGuard],
     children: [
       // {
       //   path: 'dashboard',
@@ -23,11 +23,11 @@ export const routes: Routes = [
   },
   {
     path: '',
-    redirectTo: '/home',
+    redirectTo: '/login',
     pathMatch: 'full'
   },
   {
     path: '**',
-    redirectTo: '/home',
+    redirectTo: '/login',
   },
 ];

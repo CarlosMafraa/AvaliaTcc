@@ -9,7 +9,7 @@
                 <img ngSrc="assets/login/icon_tcc.png" width="75" height="75"
                      alt="Ícone do TCC" class="img1"
                      priority>
-                <p class="text-xl text ml-2">Banca Fácil</p>
+                <p class="text-xl text ml-2">Avalia Tcc</p>
               </div>
               <div>
                 <p-floatlabel variant="on">
@@ -60,26 +60,29 @@
               <div>
                 <p-button type="submit" label="Salvar" styleClass="w-full"/>
               </div>
+              <div class="flex justify-content-center cursor-pointer">
+                <a class="font-bold" (click)="onLogin()">Login</a>
+              </div>
             </div>
           </form>
         } @else {
           <form [formGroup]="formGroupLogin" (ngSubmit)="login()">
             <div class="flex flex-column gap-4 p-6 m-6">
               <div class="flex flex-column align-items-center justify-content-center p-4">
-                <img ngSrc="../../../../../AvaliaTcc/src/assets/login/icon_tcc.png" width="150" height="150"
+                <img ngSrc="assets/login/icon_tcc.png" width="150" height="150"
                      alt="Ícone do TCC" class="img1"
                      priority>
-                <p class="text-3xl text">Banca Fácil</p>
+                <p class="text-3xl text">Avalia Tcc</p>
               </div>
               <div>
                 <p-floatlabel variant="on">
-                  <input type="text" pInputText placeholder="E-mail" class="w-full" formControlName="email"/>
+                  <input type="text" pInputText class="w-full" formControlName="email"/>
                   <label>E-mail</label>
                 </p-floatlabel>
               </div>
               <div>
                 <p-floatlabel variant="on">
-                  <p-password [toggleMask]="true" [feedback]="false" placeholder="Senha" formControlName="senha"
+                  <p-password [toggleMask]="true" [feedback]="false" formControlName="senha"
                               styleClass="w-full"/>
                   <label>Senha</label>
                 </p-floatlabel>

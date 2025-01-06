@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, inject, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 import {Router} from '@angular/router';
 import {FloatLabel} from 'primeng/floatlabel';
@@ -6,6 +6,10 @@ import {NgOptimizedImage} from '@angular/common';
 import {InputText} from 'primeng/inputtext';
 import {Password} from 'primeng/password';
 import {Button} from 'primeng/button';
+import {RadioButton} from 'primeng/radiobutton';
+import {SupabaseService} from '../../services/supabase/supabase.service';
+import {Observable} from 'rxjs';
+import {AuthResponse} from '@supabase/supabase-js';
 
 @Component({
   standalone: true,
@@ -16,21 +20,20 @@ import {Button} from 'primeng/button';
     NgOptimizedImage,
     InputText,
     Password,
-    Button
+    Button,
+    RadioButton
   ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss'
 })
-export class LoginComponent implements OnInit{
+export class LoginComponent implements OnInit {
   public formGroupRegister: FormGroup = new FormGroup({});
   public formGroupLogin: FormGroup = new FormGroup({});
   public register: boolean = false;
+  private formBuilder: FormBuilder = inject(FormBuilder);
+  private supabaseService: SupabaseService = inject(SupabaseService);
+  private router: Router = inject(Router);
 
-  constructor(
-    private formBuilder: FormBuilder,
-    private router: Router
-  ) {
-  }
 
   ngOnInit() {
     this.initFormLogin();
@@ -52,8 +55,8 @@ export class LoginComponent implements OnInit{
         sobrenome: ['', Validators.required],
         email: ['', [Validators.required, Validators.email]],
         senha: ['', [Validators.required, Validators.minLength(8)]],
-        perfil: ['',Validators.required],
-        instituicao: ['',Validators.required]
+        perfil: ['', Validators.required],
+        instituicao: ['', Validators.required]
       });
   }
 
@@ -65,11 +68,40 @@ export class LoginComponent implements OnInit{
     this.register = false;
   }
 
-  public registrar(): void {
+  public async registrar(): Promise<void> {
+    if (this.formGroupRegister.invalid) {
+      return;
+    }
 
+    const register = this.formGroupRegister.getRawValue();
+
+    try {
+      const user: Observable<AuthResponse> = await this.supabaseService.register(register.email, register.senha, register.nome, register.sobrenome, register.perfil, register.instituicao);
+      if (user) {
+        console.log('Usuário registrado com sucesso!');
+        this.formGroupRegister.reset();
+        this.register = false;
+        this.formGroupRegister.reset();
+      }
+    } catch (error) {
+      console.error('Erro ao registrar usuário:', error);
+    }
   }
 
-  public login(): void {
+  public async login(): Promise<void> {
+    if (this.formGroupLogin.invalid) {
+      return;
+    }
 
+    const login = this.formGroupLogin.getRawValue();
+
+    try {
+      const user: Observable<AuthResponse> = await this.supabaseService.login(login.email, login.senha);
+      if (user) {
+        console.log('Login bem-sucedido!', user);
+      }
+    } catch (error) {
+      console.error('Erro ao fazer login:', error);
+    }
   }
 }
