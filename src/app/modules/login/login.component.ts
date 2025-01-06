@@ -68,40 +68,50 @@ export class LoginComponent implements OnInit {
     this.register = false;
   }
 
-  public async registrar(): Promise<void> {
+  public registrar(): void {
     if (this.formGroupRegister.invalid) {
       return;
     }
 
     const register = this.formGroupRegister.getRawValue();
 
-    try {
-      const user: Observable<AuthResponse> = await this.supabaseService.register(register.email, register.senha, register.nome, register.sobrenome, register.perfil, register.instituicao);
-      if (user) {
-        console.log('Usuário registrado com sucesso!');
-        this.formGroupRegister.reset();
-        this.register = false;
-        this.formGroupRegister.reset();
-      }
-    } catch (error) {
-      console.error('Erro ao registrar usuário:', error);
-    }
+    this.supabaseService
+      .register(
+        register.email,
+        register.senha,
+        register.nome,
+        register.sobrenome,
+        register.perfil,
+        register.instituicao
+      )
+      .subscribe({
+        next: (authResponse: AuthResponse) => {
+          console.log('Usuário registrado com sucesso!', authResponse);
+          this.formGroupRegister.reset();
+          this.register = false;
+        },
+        error: (error) => {
+          console.error('Erro ao registrar usuário:', error);
+        },
+      });
   }
 
-  public async login(): Promise<void> {
+
+  public login(): void {
     if (this.formGroupLogin.invalid) {
       return;
     }
 
     const login = this.formGroupLogin.getRawValue();
 
-    try {
-      const user: Observable<AuthResponse> = await this.supabaseService.login(login.email, login.senha);
-      if (user) {
-        console.log('Login bem-sucedido!', user);
+    this.supabaseService.login(login.email, login.senha).subscribe((result) => {
+      if (result.error) {
+        console.log(result.error.message)
+      } else {
+        this.router.navigate(['/home']).then();
       }
-    } catch (error) {
-      console.error('Erro ao fazer login:', error);
-    }
+    })
   }
+
+
 }
