@@ -1,0 +1,102 @@
+<div class="h-screen">
+  <div class="flex justify-content-center align-items-center h-full background-h-full">
+    <div class="background-form">
+      <div class="background">
+        @if (register) {
+          <form [formGroup]="formGroupRegister" (ngSubmit)="registrar()">
+            <div class="flex flex-column gap-4 p-6 m-6">
+              <div class="flex align-items-center justify-content-center p-2">
+                <img ngSrc="assets/login/icon_tcc.png" width="75" height="75"
+                     alt="Ícone do TCC" class="img1"
+                     priority>
+                <p class="text-xl text ml-2">Banca Fácil</p>
+              </div>
+              <div>
+                <p-floatlabel variant="on">
+                  <input pInputText autocomplete="off" formControlName="nome" class="w-full"/>
+                  <label>Nome</label>
+                </p-floatlabel>
+              </div>
+              <div>
+                <p-floatlabel variant="on">
+                  <input pInputText autocomplete="off" formControlName="sobrenome" class="w-full"/>
+                  <label>Sobrenome</label>
+                </p-floatlabel>
+              </div>
+              <div>
+                <p-floatlabel variant="on">
+                  <input pInputText autocomplete="off" formControlName="email" class="w-full"/>
+                  <label>E-mail</label>
+                </p-floatlabel>
+              </div>
+              <div class="w-full">
+                <p-floatlabel variant="on">
+                  <p-password [toggleMask]="true" [feedback]="false" formControlName="senha" styleClass="w-full"/>
+                  <label>Senha</label>
+                </p-floatlabel>
+              </div>
+              <div>
+                <p-floatlabel variant="on">
+                  <p-password [toggleMask]="true" [feedback]="false" styleClass="w-full"/>
+                  <label>Confirme sua Senha</label>
+                </p-floatlabel>
+              </div>
+              <div class="flex justify-content-between">
+                <div>
+                  <p-radiobutton name="perfil" value="professor" formControlName="perfil" inputId="professor"/>
+                  <label class="ml-2">Professor</label>
+                </div>
+                <div>
+                  <p-radiobutton name="perfil" value="aluno" formControlName="perfil" inputId="aluno"/>
+                  <label class="ml-2">Aluno</label>
+                </div>
+              </div>
+              <div>
+                <p-floatlabel variant="on">
+                  <input pInputText autocomplete="off" formControlName="instituicao" class="w-full"/>
+                  <label>Instituição</label>
+                </p-floatlabel>
+              </div>
+              <div>
+                <p-button type="submit" label="Salvar" styleClass="w-full"/>
+              </div>
+            </div>
+          </form>
+        } @else {
+          <form [formGroup]="formGroupLogin" (ngSubmit)="login()">
+            <div class="flex flex-column gap-4 p-6 m-6">
+              <div class="flex flex-column align-items-center justify-content-center p-4">
+                <img ngSrc="../../../../../AvaliaTcc/src/assets/login/icon_tcc.png" width="150" height="150"
+                     alt="Ícone do TCC" class="img1"
+                     priority>
+                <p class="text-3xl text">Banca Fácil</p>
+              </div>
+              <div>
+                <p-floatlabel variant="on">
+                  <input type="text" pInputText placeholder="E-mail" class="w-full" formControlName="email"/>
+                  <label>E-mail</label>
+                </p-floatlabel>
+              </div>
+              <div>
+                <p-floatlabel variant="on">
+                  <p-password [toggleMask]="true" [feedback]="false" placeholder="Senha" formControlName="senha"
+                              styleClass="w-full"/>
+                  <label>Senha</label>
+                </p-floatlabel>
+              </div>
+              <div>
+                <p-button label="Entrar" styleClass="w-full" type="submit"/>
+              </div>
+              <div class="flex justify-content-center cursor-pointer">
+                <a class="font-bold">Esqueceu sua senha?</a>
+              </div>
+              <div class="flex justify-content-center cursor-pointer">
+                <a class="font-bold" (click)="onRegister()">Cadastra-se</a>
+              </div>
+            </div>
+          </form>
+        }
+      </div>
+    </div>
+  </div>
+</div>

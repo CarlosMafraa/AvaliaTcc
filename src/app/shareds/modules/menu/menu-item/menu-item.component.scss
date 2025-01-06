@@ -1,0 +1,12 @@
+.color-name{
+  color: var(--second-color);
+}
+
+.item:hover .color-name{
+  color: var(--primary-color);
+}
+
+.item:hover{
+  background: var(--second-color);
+  border-radius: 10px;
+}

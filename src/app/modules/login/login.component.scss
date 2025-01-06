@@ -1,0 +1,25 @@
+.background-h-full{
+  background: var(--primary-color)
+}
+
+.background-form{
+  background-image: url("/assets/login/image_tcc.avif");
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  overflow: hidden;
+  border-radius: 10px;
+  width: 350px;
+  height: 600px;
+}
+
+.background{
+  background: rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(10px);
+}
+
+.img1{
+  border-radius: 50%;
+}
+
+
