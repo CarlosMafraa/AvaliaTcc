@@ -85,14 +85,17 @@ export class LoginComponent implements OnInit {
         register.instituicao
       )
       .subscribe({
-        next: (authResponse: AuthResponse) => {
+        next: (authResponse: AuthResponse): void => {
           console.log('Usuário registrado com sucesso!', authResponse);
           this.formGroupRegister.reset();
           this.register = false;
         },
-        error: (error) => {
+        error: (error): void => {
           console.error('Erro ao registrar usuário:', error);
         },
+        complete: (): void => {
+          console.log('Processo de registro concluído.');
+        }
       });
   }
 
@@ -104,14 +107,21 @@ export class LoginComponent implements OnInit {
 
     const login = this.formGroupLogin.getRawValue();
 
-    this.supabaseService.login(login.email, login.senha).subscribe((result) => {
-      if (result.error) {
-        console.log(result.error.message)
-      } else {
-        this.router.navigate(['/home']).then();
+    this.supabaseService.login(login.email, login.senha).subscribe({
+      next: (result: AuthResponse): void => {
+        if (result.error) {
+          console.error('Erro no login:', result.error.message);
+        } else {
+          console.log('Login bem-sucedido!', result);
+          this.router.navigate(['/home']).then();
+        }
+      },
+      error: (err): void => {
+        console.error('Erro inesperado no login:', err);
+      },
+      complete: (): void => {
+        console.log('Processo de login concluído.');
       }
-    })
+    });
   }
-
-
 }

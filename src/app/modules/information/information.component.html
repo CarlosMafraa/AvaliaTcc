@@ -1,0 +1,53 @@
+<div class="flex flex-column card">
+  <div>
+    <p class="font-bold text-xl">{{ titulo }}</p>
+  </div>
+  <div>
+    <p>{{ descricao }}</p>
+  </div>
+  <div class="flex flex-row gap-4">
+    <div>
+      <p>Orientador: {{ orientador }}</p>
+    </div>
+    <div class="flex flex-row gap-2">
+      <div>
+        <p>Banca:</p>
+      </div>
+      <div class="flex flex-row gap-4">
+        @for (professor of professoresBanca; track professor) {
+          <p> {{ professor }}</p>
+        }
+      </div>
+    </div>
+    <div>
+      <p>Data de Apresentação: {{ dataApresentacao }}</p>
+    </div>
+  </div>
+  <div class="flex flex-row gap-2">
+    @if (guidance) {
+      <div>
+        <p-button label="Adicionar " (click)="openDialog()">
+          <span class="material-symbols-outlined">
+            add_circle
+          </span>
+        </p-button>
+      </div>
+    } @else {
+      <div>
+        <p-button label="Download">
+          <span class="material-symbols-outlined">
+            download
+          </span>
+        </p-button>
+      </div>
+      <div>
+        <p-button label="Visualizar">
+          <span class="material-symbols-outlined">
+            visibility
+          </span>
+        </p-button>
+      </div>
+    }
+
+  </div>
+</div>

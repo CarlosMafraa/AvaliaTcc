@@ -1,0 +1,36 @@
+<form [formGroup]="formGroup" class="flex flex-column" (ngSubmit)="salve()" >
+  <div class="my-2">
+    <p-floatlabel variant="on" >
+      <input pInputText  autocomplete="off" formControlName="titulo" class="w-full" />
+      <label>Título</label>
+    </p-floatlabel>
+  </div>
+  <div class="my-2">
+    <p-floatlabel variant="on">
+      <input pInputText  autocomplete="off" formControlName="descricao" class="w-full"/>
+      <label>Descrição</label>
+    </p-floatlabel>
+  </div>
+  <div class="my-2">
+    <p-select [options]="professores" formControlName="orientador" optionLabel="nome" placeholder="Selecione seu oreintador" styleClass="w-full"></p-select>
+  </div>
+  <div class="my-2">
+    <p-fileupload #fu mode="basic" chooseLabel="Upload TCC"  name="demo[]" accept="application/pdf" maxFileSize="1000000" (onSelect)="onUpload($event)" />
+  </div>
+  <div class="flex justify-content-end gap-2">
+    <div>
+      <p-button label="Cancelar" severity="danger" (click)="closeDialog()">
+        <span class="material-symbols-outlined">
+          cancel
+        </span>
+      </p-button>
+    </div>
+    <div>
+      <p-button label="Salvar" type="submit">
+        <span class="material-symbols-outlined">
+          save
+        </span>
+      </p-button>
+    </div>
+  </div>
+</form>

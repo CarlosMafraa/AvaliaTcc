@@ -10,15 +10,15 @@ export const routes: Routes = [
     path: 'home', loadComponent: () => import('./shareds/modules/home/home.component').then(m => m.HomeComponent),
     canActivate: [authGuard],
     children: [
-      // {
-      //   path: 'dashboard',
-      //   loadComponent: () => import('./modules/dashboard/dashboard.component').then(m => m.DashboardComponent),
-      // },
-      // {
-      //   path: '',
-      //   redirectTo: 'dashboard',
-      //   pathMatch: 'full'
-      // }
+      {
+        path: 'dashboard',
+        loadComponent: () => import('./modules/dashboard/dashboard.component').then(m => m.DashboardComponent),
+      },
+      {
+        path: '',
+        redirectTo: 'dashboard',
+        pathMatch: 'full'
+      }
     ]
   },
   {
