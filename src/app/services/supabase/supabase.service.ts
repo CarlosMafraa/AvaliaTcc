@@ -1,7 +1,7 @@
 import {Injectable, signal} from '@angular/core';
 import {AuthResponse, createClient, SupabaseClient, User, UserResponse} from '@supabase/supabase-js';
 import {environment} from '../../../environments/environment';
-import {catchError, from, Observable, throwError} from 'rxjs';
+import {catchError, from, Observable, switchMap, throwError} from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -37,7 +37,7 @@ export class SupabaseService {
   }
 
 
-  public getUser() {
+  public getUser(): void {
     this.supabase.auth.onAuthStateChange((event, session) => {
       if (event === 'SIGNED_IN') {
         this.currentUser.set({
@@ -53,9 +53,36 @@ export class SupabaseService {
     console.log(this.currentUser)
   }
 
-  public logout(): void {
-    this.supabase.auth.signOut().then()
-    console.log("Eu saiii!")
+  public signOut() {
+    return this.supabase.auth.signOut()
   }
+
+  public uploadTCC(filePath: string, file: File) {
+    return this.supabase.storage.from('tccs_files').upload(filePath, file, {upsert: true, contentType: "application/pdf"})
+  }
+
+  public salvePDF(titulo: string, descricao: string, pdf: string, orientador: number) {
+     return  this.supabase.from('tccs').insert([
+      {
+        titulo:titulo,
+        descricao:descricao,
+        pdf:pdf,
+        orientador_id:orientador,
+      }
+    ])
+  }
+
+
+  public getInstituicao() {
+    return this.supabase.from('instituicao').select()
+  }
+
+  public getUsers(){
+    return this.supabase.from('users').select()
+  }
+
+
+
+
 
 }

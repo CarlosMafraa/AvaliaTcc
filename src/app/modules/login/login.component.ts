@@ -10,6 +10,7 @@ import {RadioButton} from 'primeng/radiobutton';
 import {SupabaseService} from '../../services/supabase/supabase.service';
 import {Observable} from 'rxjs';
 import {AuthResponse} from '@supabase/supabase-js';
+import {Select} from 'primeng/select';
 
 @Component({
   standalone: true,
@@ -21,7 +22,8 @@ import {AuthResponse} from '@supabase/supabase-js';
     InputText,
     Password,
     Button,
-    RadioButton
+    RadioButton,
+    Select
   ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss'
@@ -33,11 +35,14 @@ export class LoginComponent implements OnInit {
   private formBuilder: FormBuilder = inject(FormBuilder);
   private supabaseService: SupabaseService = inject(SupabaseService);
   private router: Router = inject(Router);
+  public professores: any[] = [];
 
 
   ngOnInit() {
     this.initFormLogin();
     this.initFormRegister();
+    this.getProfessores();
+    this.getUsers();
   }
 
   public initFormLogin(): void {
@@ -123,5 +128,20 @@ export class LoginComponent implements OnInit {
         console.log('Processo de login concluído.');
       }
     });
+  }
+
+  public getProfessores(): void {
+    this.supabaseService.getInstituicao().then((res) => {
+      if (res.data) {
+        this.professores = res.data
+      }
+    });
+  }
+
+
+  public getUsers() {
+    this.supabaseService.getUsers().then((res) => {
+      console.log(res)
+    })
   }
 }
