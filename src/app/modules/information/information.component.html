@@ -6,8 +6,9 @@
     <p>{{ descricao }}</p>
   </div>
   <div class="flex flex-row gap-4">
-    <div>
-      <p>Orientador: {{ orientador }}</p>
+    <div class="flex align-items-center">
+      <p>Orientador(a):</p>
+      <strong>{{ orientador }}</strong>
     </div>
     <div class="flex flex-row gap-2">
       <div>
@@ -16,11 +17,19 @@
       <div class="flex flex-row gap-4">
         @for (professor of professoresBanca; track professor) {
           <p> {{ professor }}</p>
+        } @empty {
+          <p>Ainda não foi definida!</p>
         }
       </div>
     </div>
-    <div>
-      <p>Data de Apresentação: {{ dataApresentacao }}</p>
+    <div class="flex align-items-center">
+      <p>Data de Apresentação:</p>
+      @if (dataApresentacao) {
+        <strong>{{ dataApresentacao }}</strong>
+      } @else {
+        <strong>Ainda não foi definida!</strong>
+      }
+
     </div>
   </div>
   <div class="flex flex-row gap-2">

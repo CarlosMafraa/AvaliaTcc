@@ -42,7 +42,6 @@ export class LoginComponent implements OnInit {
     this.initFormLogin();
     this.initFormRegister();
     this.getProfessores();
-    this.getUsers();
   }
 
   public initFormLogin(): void {
@@ -89,19 +88,18 @@ export class LoginComponent implements OnInit {
         register.perfil,
         register.instituicao
       )
-      .subscribe({
-        next: (authResponse: AuthResponse): void => {
-          console.log('Usuário registrado com sucesso!', authResponse);
-          this.formGroupRegister.reset();
-          this.register = false;
-        },
-        error: (error): void => {
-          console.error('Erro ao registrar usuário:', error);
-        },
-        complete: (): void => {
-          console.log('Processo de registro concluído.');
-        }
-      });
+      .then((res) => {
+        console.log(res)
+        console.log('Usuário registrado com sucesso!');
+        this.formGroupRegister.reset();
+        this.register = false;
+      }).catch((error) => {
+      console.error('Erro ao registrar usuário:', error);
+
+    }).finally(() => {
+      console.log('Processo de registro concluído.');
+
+    })
   }
 
 
@@ -138,10 +136,4 @@ export class LoginComponent implements OnInit {
     });
   }
 
-
-  public getUsers() {
-    this.supabaseService.getUsers().then((res) => {
-      console.log(res)
-    })
-  }
 }

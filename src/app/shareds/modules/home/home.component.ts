@@ -14,10 +14,10 @@ import {SupabaseService} from '../../../services/supabase/supabase.service';
   styleUrl: './home.component.scss'
 })
 export class HomeComponent implements OnInit{
-  service = inject(SupabaseService)
+  public supabaseService:SupabaseService = inject(SupabaseService)
 
   ngOnInit() {
-    this.service.getUser();
+    this.supabaseService.getToken();
   }
 
 }

@@ -1,8 +1,9 @@
-import { Component } from '@angular/core';
+import {Component, inject, OnInit} from '@angular/core';
 import {Dialog} from 'primeng/dialog';
 import {Button} from 'primeng/button';
 import {InformationComponent} from '../information/information.component';
 import {DashboardAddComponent} from './dashboard-add/dashboard-add.component';
+import {SupabaseService} from '../../services/supabase/supabase.service';
 
 @Component({
   standalone: true,
@@ -16,9 +17,36 @@ import {DashboardAddComponent} from './dashboard-add/dashboard-add.component';
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss'
 })
-export class DashboardComponent {
-  public listTcc: any[] = trabalhos;
+export class DashboardComponent implements OnInit {
+  public listTcc: any[] = [];
   public dialog: boolean = false;
+  public id!: string;
+
+  private supabaseService: SupabaseService = inject(SupabaseService);
+
+  ngOnInit() {
+    this.getUser();
+  }
+
+  public listTccUser(id: string) {
+    this.supabaseService.getTCCsDoUsuario(id)?.then((res) => {
+      if(res.data){
+        this.listTcc = res.data
+      }
+    })
+  }
+
+  public getUser() {
+    this.supabaseService.getUser().then((res) => {
+      if (res.data.user && res.data.user.id) {
+        this.id = res.data.user.id
+      }
+    }).catch(() => {
+
+    }).finally(() => {
+      this.listTccUser(this.id);
+    })
+  }
 
   public openDialog(): void {
     this.dialog = true;
@@ -29,23 +57,5 @@ export class DashboardComponent {
   }
 }
 
-const trabalhos: any[] = [
-  {
-    titulo: "Análise de Algoritmos",
-    descricao: "Este trabalho aborda a análise de diversos algoritmos computacionais, com foco em eficiência e complexidade. São explorados algoritmos de ordenação, busca, e algoritmos em grafos, além de técnicas para otimização.",
-    pdfUrl: "https://firebaseurl.com/meutrabalho.pdf",
-    professoresBanca: ["Professor A", "Professor B", "Professor C"],
-    orientador: "Professor X",
-    dataApresentacao: new Date('2023-07-01')
-  },
-  {
-    titulo: "Inteligência Artificial",
-    descricao: "Este TCC investiga os fundamentos da inteligência artificial, cobrindo áreas como aprendizado de máquina, redes neurais e processamento de linguagem natural. Inclui um estudo de caso sobre a aplicação de IA na análise de dados.",
-    pdfUrl: "https://firebaseurl.com/iatcc.pdf",
-    professoresBanca: ["Professor D", "Professor E", "Professor F"],
-    orientador: "Professor Y",
-    dataApresentacao: new Date('2023-09-01')
-  }
-];
 
 

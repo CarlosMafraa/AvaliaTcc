@@ -27,6 +27,7 @@ export class DashboardAddComponent implements OnInit {
   public professores: any[] = [];
   public formGroup: FormGroup = new FormGroup({})
   public selectedFile: File | null = null;
+  public id!: string;
 
   private formBuilder: FormBuilder = inject(FormBuilder);
   private supabaseService: SupabaseService = inject(SupabaseService);
@@ -35,17 +36,24 @@ export class DashboardAddComponent implements OnInit {
   ngOnInit(): void {
     this.initForm();
     this.getProfessor();
+    this.getUser();
   }
 
   public initForm(): void {
     this.formGroup = this.formBuilder.group({
       titulo: ['', Validators.required],
       descricao: ['', Validators.required],
-      orientador: [''],
+      orientador: ['', Validators.required],
+      aluno_id:['']
     })
   }
 
   public getProfessor(): void {
+    this.supabaseService.getTeachers().then((res)=> {
+      if(res.data){
+        this.professores = res.data
+      }
+    });
 
   }
 
@@ -66,12 +74,13 @@ export class DashboardAddComponent implements OnInit {
         return;
       }
 
+      tcc.aluno_id = this.id;
 
       this.supabaseService.uploadTCC(filePath, file).then((res): void => {
         console.log(res)
         if (res.data) {
           const pdf: string = res.data.path;
-          this.supabaseService.salvePDF(tcc.titulo, tcc.descricao, pdf, 1).then((res) => {
+          this.supabaseService.salvePDF(tcc.titulo, tcc.descricao, pdf, tcc.orientador,  tcc.aluno_id).then((res) => {
             console.log(res)
           })
         }
@@ -91,5 +100,17 @@ export class DashboardAddComponent implements OnInit {
 
   public closeDialog(): void {
 
+  }
+
+  public getUser() {
+    this.supabaseService.getUser().then((res) => {
+      if (res.data.user && res.data.user.id) {
+        this.id = res.data.user.id
+      }
+    }).catch(() => {
+
+    }).finally(() => {
+
+    })
   }
 }

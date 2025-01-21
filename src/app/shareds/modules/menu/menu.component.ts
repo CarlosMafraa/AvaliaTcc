@@ -1,6 +1,8 @@
-import { Component } from '@angular/core';
+import {Component} from '@angular/core';
 import {MenuItemComponent} from './menu-item/menu-item.component';
 import {NgOptimizedImage} from '@angular/common';
+import {Router} from '@angular/router';
+import {SupabaseService} from '../../../services/supabase/supabase.service';
 
 @Component({
   standalone: true,
@@ -14,6 +16,29 @@ import {NgOptimizedImage} from '@angular/common';
 })
 export class MenuComponent {
   public itens: any = itensMenus;
+
+  constructor(
+    private router: Router,
+    private supabaseService: SupabaseService) {
+  }
+
+  public navigate(route: string) {
+    this.router.navigate([route]).then();
+  }
+
+  public handleAction(action: string) {
+    if (action === 'logout') {
+      this.logout();
+    }
+  }
+
+  public logout() {
+    this.supabaseService.signOut().then(() => {
+        console.log('Usuário deslogado');
+        this.router.navigate(['/login']).then();
+      }
+    );
+  }
 
 }
 
@@ -34,4 +59,9 @@ const itensMenus: any[] = [
     name: 'Orientador',
     route: '/guidance',
   },
+  {
+    icon: 'logout',
+    name: 'Sair',
+    action: 'logout'
+  }
 ]

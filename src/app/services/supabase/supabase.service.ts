@@ -10,21 +10,26 @@ export class SupabaseService {
   private supabase = createClient(environment.supabaseUrl, environment.supabaseKey);
   private currentUser = signal<{ email: string, username: string } | null>(null)
 
-  public register(email: string, password: string, nome: string, sobrenome: string, perfil: string, instituicao: string): Observable<AuthResponse> {
-    const promise = this.supabase.auth.signUp(
+  public register(email: string, password: string, nome: string, sobrenome: string, perfil: string, instituicao: string) {
+    return this.supabase.auth.signUp(
       {
         email,
         password,
-        options: {
-          data: {
-            nome,
-            sobrenome,
-            perfil,
-            instituicao
-          }
-        }
-      });
-    return from(promise)
+      }).then((res) => {
+      if (res.data) {
+        this.supabase.from('users').insert({
+          user_id: res.data.user?.id,
+          nome: nome,
+          sobrenome: sobrenome,
+          perfil: perfil,
+          instituicao: instituicao
+        }).then((res) => {
+          console.log(res)
+        })
+      } else {
+        throw new Error('Erro ao criar usuário');
+      }
+    })
   }
 
   public login(email: string, password: string): Observable<AuthResponse> {
@@ -37,37 +42,42 @@ export class SupabaseService {
   }
 
 
-  public getUser(): void {
+  public getToken(): void {
     this.supabase.auth.onAuthStateChange((event, session) => {
       if (event === 'SIGNED_IN') {
         this.currentUser.set({
           email: session?.user.email!,
-          username: session?.user.identities?.at(0)?.identity_data?.['username']
-        })
-        console.log(this.currentUser)
+          username: session?.user.identities && session.user.identities.length > 0 ? session.user.identities[0].identity_data?.['username'] : null
+        });
+        console.log(this.currentUser);
       } else if (event === 'SIGNED_OUT') {
-        this.currentUser.set(null)
+        this.currentUser.set(null);
       }
-      console.log('!!!', event, session)
-    })
-    console.log(this.currentUser)
+      console.log('!!!', event, session);
+    });
+    console.log(this.currentUser);
   }
+
 
   public signOut() {
     return this.supabase.auth.signOut()
   }
 
   public uploadTCC(filePath: string, file: File) {
-    return this.supabase.storage.from('tccs_files').upload(filePath, file, {upsert: true, contentType: "application/pdf"})
+    return this.supabase.storage.from('tccs_files').upload(filePath, file, {
+      upsert: true,
+      contentType: "application/pdf"
+    })
   }
 
-  public salvePDF(titulo: string, descricao: string, pdf: string, orientador: number) {
-     return  this.supabase.from('tccs').insert([
+  public salvePDF(titulo: string, descricao: string, pdf: string, orientador: number, aluno_id: string) {
+    return this.supabase.from('tccs').insert([
       {
-        titulo:titulo,
-        descricao:descricao,
-        pdf:pdf,
-        orientador_id:orientador,
+        titulo: titulo,
+        descricao: descricao,
+        pdf: pdf,
+        orientador_id: orientador,
+        aluno_id: aluno_id,
       }
     ])
   }
@@ -77,12 +87,28 @@ export class SupabaseService {
     return this.supabase.from('instituicao').select()
   }
 
-  public getUsers(){
-    return this.supabase.from('users').select()
+  public getTeachers() {
+    return this.supabase.from('users').select().eq('perfil','professor')
+  }
+
+  public getTeacherById(id: number) {
+    return this.supabase.from('users').select().eq('id',id)
+
+  }
+
+  public getTCCsDoUsuario(id: string) {
+    return this.supabase.from('tccs').select().eq('aluno_id', id);
+  }
+
+  public getUser() {
+    return this.supabase.auth.getUser()
   }
 
 
+  public getStudents() {
+    return this.supabase.from('users').select().eq('perfil', 'aluno')
 
+  }
 
 
 }
