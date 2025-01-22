@@ -1,0 +1,20 @@
+<div class="flex flex-column">
+  <div>
+    <p class="font-bold text-3xl">Listagem de Tcc</p>
+  </div>
+  <div>
+    @for (tcc of listTcc; track tcc) {
+      <app-information [id]="tcc.id"
+                       [titulo]="tcc.titulo"
+                       [descricao]="tcc.descricao"
+                       [pdfUrl]="tcc.pdfUrl"
+                       [professoresBanca]="tcc.professoresBanca ?? []"
+                       [orientador]="tcc.orientador"
+                       [dataApresentacao]="tcc.dataApresentacao ? tcc.dataApresentacao : ''"
+                       [guidance]="true"
+                       [user_id]="this.userId"
+      ></app-information>
+    }
+  </div>
+</div>
+

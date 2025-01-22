@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import {authGuard} from './services/auth/auth.guard';
+import {BankComponent} from './modules/bank/bank.component';
 
 export const routes: Routes = [
   {
@@ -13,6 +14,10 @@ export const routes: Routes = [
       {
         path: 'dashboard',
         loadComponent: () => import('./modules/dashboard/dashboard.component').then(m => m.DashboardComponent),
+      },
+      {
+        path: 'bank',
+        loadComponent: () => import('./modules/bank/bank.component').then(m => m.BankComponent),
       },
       {
         path: '',

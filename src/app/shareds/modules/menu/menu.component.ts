@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, inject} from '@angular/core';
 import {MenuItemComponent} from './menu-item/menu-item.component';
 import {NgOptimizedImage} from '@angular/common';
 import {Router} from '@angular/router';
@@ -17,10 +17,8 @@ import {SupabaseService} from '../../../services/supabase/supabase.service';
 export class MenuComponent {
   public itens: any = itensMenus;
 
-  constructor(
-    private router: Router,
-    private supabaseService: SupabaseService) {
-  }
+  private supabaseService: SupabaseService = inject(SupabaseService);
+  private router: Router = inject(Router);
 
   public navigate(route: string) {
     this.router.navigate([route]).then();
@@ -57,7 +55,7 @@ const itensMenus: any[] = [
   {
     icon: 'draft_orders',
     name: 'Orientador',
-    route: '/guidance',
+    route: '/bank',
   },
   {
     icon: 'logout',

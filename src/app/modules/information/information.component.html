@@ -60,3 +60,10 @@
 
   </div>
 </div>
+
+<p-dialog header="Informações do TCC" [modal]="true"
+          [(visible)]="visible"
+          [style]="{ width: '50rem' }"
+          (onHide)="closeDialog()">
+  <app-bank-add [id]="id" [user_id]="user_id"></app-bank-add>
+</p-dialog>

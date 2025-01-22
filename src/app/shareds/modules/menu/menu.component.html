@@ -8,7 +8,9 @@
     @for (item of itens; track item) {
 
       <div class="my-2">
-        <app-menu-item [icon]="item.icon" [name]="item.name"
+        <app-menu-item [icon]="item.icon"
+                       [name]="item.name"
+                       [route]="item.route"
                        (click)="item.action ? handleAction(item.action) : navigate(item.route)"></app-menu-item>
       </div>
     }

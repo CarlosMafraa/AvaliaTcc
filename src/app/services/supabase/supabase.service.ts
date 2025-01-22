@@ -93,8 +93,11 @@ export class SupabaseService {
 
   public getTeacherById(id: number) {
     return this.supabase.from('users').select().eq('id',id)
-
   }
+
+  public getListProfessores(id: number){
+      return this.supabase.from('users').select().eq('perfil', 'professor').neq('id',id)
+    }
 
   public getTCCsDoUsuario(id: string) {
     return this.supabase.from('tccs').select().eq('aluno_id', id);
@@ -104,11 +107,28 @@ export class SupabaseService {
     return this.supabase.auth.getUser()
   }
 
+  public getUserById(id: string){
+    return this.supabase.from('users').select().eq('user_id',id)
+
+  }
+
 
   public getStudents() {
     return this.supabase.from('users').select().eq('perfil', 'aluno')
+  }
+
+  public getTccsOrientador(nome: string){
+    return this.supabase.from('tccs').select().eq('orientador', nome)
 
   }
+
+  public updateBanca(id: number, professores: any[]) {
+    return this.supabase.from('tccs').update({
+      banca: professores
+    }).eq('id', id);
+  }
+
+
 
 
 }
