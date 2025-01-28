@@ -15,9 +15,9 @@
         <p>Banca:</p>
       </div>
       <div class="flex flex-row gap-4">
-        @for (professor of banca; track professor; let i = $index ) {
+        @for (professor of banca; track professor; let i = $index) {
           <p class="font-bold"> {{ professor }}
-            @if(!(i == banca.length -1)){
+            @if (!(i == banca.length - 1)) {
               <span>,</span>
             }
           </p>
@@ -29,39 +29,35 @@
     </div>
   </div>
   <div class="flex flex-row gap-2">
-    @if (guidance) {
+    <div>
+      <p-button label="Download" (click)="download(pdfUrl)">
+          <span class="material-symbols-outlined">
+            download
+          </span>
+      </p-button>
+    </div>
+    <div>
+      <p-button label="Visualizar" (click)="view(pdfUrl)">
+          <span class="material-symbols-outlined">
+            visibility
+          </span>
+      </p-button>
+    </div>
+    @if (advisor) {
       <div>
-        <p-button label="Adicionar " (click)="openDialog()">
+        <p-button label="Adicionar Banca" (click)="openDialog()">
           <span class="material-symbols-outlined">
             add_circle
           </span>
         </p-button>
       </div>
-    } @else {
-      <div>
-        <p-button label="Download" (click)="download(pdfUrl)">
-          <span class="material-symbols-outlined">
-            download
-          </span>
-        </p-button>
-      </div>
-      <div>
-        <p-button label="Visualizar" (click)="view(pdfUrl)">
-          <span class="material-symbols-outlined">
-            visibility
-          </span>
-        </p-button>
-      </div>
     }
-
   </div>
 </div>
 
-<p-dialog header="Informações do TCC" [modal]="true"
+<p-dialog header="Adicionar Banca" [modal]="true"
           [(visible)]="visible"
           [style]="{ width: '50rem' }"
           (onHide)="closeDialog()">
-  <app-bank-add [id]="id"
-                (closeDialogEmitter)="closeDialog()"
-  ></app-bank-add>
+  <app-advisor-add [id]=orientador_id (closeDialogEmitter)=closeDialog()></app-advisor-add>
 </p-dialog>

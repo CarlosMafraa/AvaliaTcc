@@ -5,6 +5,7 @@ import {Dialog} from 'primeng/dialog';
 import {BankAddComponent} from '../bank/bank-add/bank-add.component';
 import {TeacherService} from '../../services/supabase/teacher/teacher.service';
 import {TccService} from '../../services/supabase/tcc/tcc.service';
+import {AdvisorAddComponent} from '../advisor/advisor-add/advisor-add.component';
 
 @Component({
   standalone: true,
@@ -12,7 +13,8 @@ import {TccService} from '../../services/supabase/tcc/tcc.service';
   imports: [
     Button,
     Dialog,
-    BankAddComponent
+    BankAddComponent,
+    AdvisorAddComponent
   ],
   templateUrl: './information.component.html',
   styleUrl: './information.component.scss'
@@ -24,7 +26,7 @@ export class InformationComponent implements OnInit {
   @Input() public pdfUrl!: string;
   @Input() public banca_id!: number | null;
   @Input() public orientador_id!: number;
-  @Input() public guidance: boolean = false;
+  @Input() public advisor: boolean = false;
 
   public visible: boolean = false;
   public orientador!: string;
@@ -55,9 +57,7 @@ export class InformationComponent implements OnInit {
     } else {
       console.log('ID null', id)
     }
-
   }
-
 
   public download(path: string): void {
     this.tccService.getPdf(path).then((res) => {

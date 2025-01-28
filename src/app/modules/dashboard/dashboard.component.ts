@@ -7,6 +7,7 @@ import {SupabaseService} from '../../services/supabase/supabase.service';
 import {UserResponse} from '@supabase/supabase-js';
 import {User} from '../../shareds/interfaces/User';
 import {Tcc} from '../../shareds/interfaces/Tcc';
+import {TccService} from '../../services/supabase/tcc/tcc.service';
 
 @Component({
   standalone: true,
@@ -26,13 +27,14 @@ export class DashboardComponent implements OnInit {
   public id!: number;
 
   private supabaseService: SupabaseService = inject(SupabaseService);
+  private tccService: TccService = inject(TccService);
 
   ngOnInit() {
     this.getUser();
   }
 
   public listTccUser(id: number) {
-    this.supabaseService.getTCCsById(id).then((res) => {
+    this.tccService.getTCCsById(id).then((res) => {
       if(res.data){
         this.listTcc = res.data
       }

@@ -40,9 +40,7 @@ export class SupabaseService {
   //   return this.supabase.from('users').select().eq('perfil', 'professor').neq('id', id)
   // }
 
-  public getTCCsById(id: number) {
-    return this.supabase.from('tccs').select().eq('aluno_id', id);
-  }
+
 
   public getUser() {
     return this.getUserAuth().then((res: UserResponse) => {

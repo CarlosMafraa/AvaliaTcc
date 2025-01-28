@@ -61,7 +61,6 @@ export class DashboardAddComponent implements OnInit {
         this.professores = res.data
       }
     });
-
   }
 
   public async salve(): Promise<void> {

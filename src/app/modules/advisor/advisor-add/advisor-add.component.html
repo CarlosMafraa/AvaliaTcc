@@ -1,14 +1,14 @@
 <form [formGroup]="formGroup" class="flex flex-column" (ngSubmit)="salve()">
   <div>
-    <p-floatlabel variant="on">
+    <p-floatlabel variant="on" class="my-2">
       <p-multiselect
         appendTo="body"
         [options]="professores"
         formControlName="banca"
         optionLabel="nome"
-        optionValue="nome"
+        optionValue="id"
         display="chip"
-        styleClass="w-full my-4" />
+        styleClass="w-full" />
       <label>Selecione a banca</label>
     </p-floatlabel>
     <div class="card flex justify-center">
