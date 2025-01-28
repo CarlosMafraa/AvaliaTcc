@@ -14,11 +14,10 @@
   <div>
     @for (tcc of listTcc; track tcc) {
       <app-information [titulo]="tcc.titulo"
-                             [descricao]="tcc.descricao"
-                             [pdfUrl]="tcc.pdfUrl"
-                             [professoresBanca]="tcc.professoresBanca ?? []"
-                             [orientador]="tcc.orientador"
-                             [dataApresentacao]="tcc.dataApresentacao ? tcc.dataApresentacao : ''"
+                       [descricao]="tcc.descricao"
+                       [pdfUrl]="tcc.pdf"
+                       [banca_id]="tcc.banca_id"
+                       [orientador_id]="tcc.orientador_id"
       ></app-information>
     }
   </div>
@@ -29,5 +28,5 @@
           [(visible)]="dialog"
           [style]="{ width: '50rem' }"
           (onHide)="closeDialog()">
-  <app-dashboard-add></app-dashboard-add>
+  <app-dashboard-add (closeDialogEmitter)="closeDialog()"></app-dashboard-add>
 </p-dialog>

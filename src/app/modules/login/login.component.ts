@@ -11,6 +11,8 @@ import {SupabaseService} from '../../services/supabase/supabase.service';
 import {Observable} from 'rxjs';
 import {AuthResponse} from '@supabase/supabase-js';
 import {Select} from 'primeng/select';
+import {LoginService} from '../../services/supabase/login/login.service';
+import {RegisterService} from '../../services/supabase/register/register.service';
 
 @Component({
   standalone: true,
@@ -32,16 +34,19 @@ export class LoginComponent implements OnInit {
   public formGroupRegister: FormGroup = new FormGroup({});
   public formGroupLogin: FormGroup = new FormGroup({});
   public register: boolean = false;
+  public instituicao: any[] = [];
+
   private formBuilder: FormBuilder = inject(FormBuilder);
-  private supabaseService: SupabaseService = inject(SupabaseService);
+  private loginService: LoginService = inject(LoginService);
+  private registerService: RegisterService = inject(RegisterService);
   private router: Router = inject(Router);
-  public professores: any[] = [];
+
 
 
   ngOnInit() {
     this.initFormLogin();
     this.initFormRegister();
-    this.getProfessores();
+    this.getInstituicao();
   }
 
   public initFormLogin(): void {
@@ -78,8 +83,7 @@ export class LoginComponent implements OnInit {
     }
 
     const register = this.formGroupRegister.getRawValue();
-
-    this.supabaseService
+    this.registerService
       .register(
         register.email,
         register.senha,
@@ -88,9 +92,8 @@ export class LoginComponent implements OnInit {
         register.perfil,
         register.instituicao
       )
-      .then((res) => {
-        console.log(res)
-        console.log('Usuário registrado com sucesso!');
+      .then((res: void) => {
+        console.log('Usuário registrado com sucesso!', res);
         this.formGroupRegister.reset();
         this.register = false;
       }).catch((error) => {
@@ -102,36 +105,26 @@ export class LoginComponent implements OnInit {
     })
   }
 
-
   public login(): void {
     if (this.formGroupLogin.invalid) {
       return;
     }
 
     const login = this.formGroupLogin.getRawValue();
+    this.loginService.login(login.email, login.senha).then((res: AuthResponse) => {
+      console.log('Login bem-sucedido!', res);
+      this.router.navigate(['/home']).then();
+    }).catch((error) => {
+      console.log('Erro inesperado no login:',error)
+    }).finally(() => {
 
-    this.supabaseService.login(login.email, login.senha).subscribe({
-      next: (result: AuthResponse): void => {
-        if (result.error) {
-          console.error('Erro no login:', result.error.message);
-        } else {
-          console.log('Login bem-sucedido!', result);
-          this.router.navigate(['/home']).then();
-        }
-      },
-      error: (err): void => {
-        console.error('Erro inesperado no login:', err);
-      },
-      complete: (): void => {
-        console.log('Processo de login concluído.');
-      }
-    });
+    })
   }
 
-  public getProfessores(): void {
-    this.supabaseService.getInstituicao().then((res) => {
+  public getInstituicao(): void {
+    this.registerService.getInstituicao().then((res) => {
       if (res.data) {
-        this.professores = res.data
+        this.instituicao = res.data
       }
     });
   }

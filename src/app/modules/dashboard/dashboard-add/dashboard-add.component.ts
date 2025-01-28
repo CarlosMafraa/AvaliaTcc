@@ -6,6 +6,10 @@ import {FileSelectEvent, FileUpload} from 'primeng/fileupload';
 import {Button} from 'primeng/button';
 import {InputText} from 'primeng/inputtext';
 import {SupabaseService} from '../../../services/supabase/supabase.service';
+import {User} from '../../../shareds/interfaces/User';
+import {TccService} from '../../../services/supabase/tcc/tcc.service';
+import {MultiSelect} from 'primeng/multiselect';
+import {TeacherService} from '../../../services/supabase/teacher/teacher.service';
 
 @Component({
   standalone: true,
@@ -16,26 +20,29 @@ import {SupabaseService} from '../../../services/supabase/supabase.service';
     Select,
     FileUpload,
     Button,
-    InputText
+    InputText,
+    MultiSelect
   ],
   templateUrl: './dashboard-add.component.html',
   styleUrl: './dashboard-add.component.scss'
 })
 export class DashboardAddComponent implements OnInit {
-  @Output() close: EventEmitter<boolean> = new EventEmitter<boolean>();
+  @Output() closeDialogEmitter: EventEmitter<boolean> = new EventEmitter<boolean>();
 
   public professores: any[] = [];
   public formGroup: FormGroup = new FormGroup({})
   public selectedFile: File | null = null;
-  public id!: string;
+  public id!: number;
 
   private formBuilder: FormBuilder = inject(FormBuilder);
+  private tccService: TccService = inject(TccService);
+  private teacherService: TeacherService = inject(TeacherService);
   private supabaseService: SupabaseService = inject(SupabaseService);
 
 
   ngOnInit(): void {
     this.initForm();
-    this.getProfessor();
+    this.getTeachers();
     this.getUser();
   }
 
@@ -44,13 +51,13 @@ export class DashboardAddComponent implements OnInit {
       titulo: ['', Validators.required],
       descricao: ['', Validators.required],
       orientador: ['', Validators.required],
-      aluno_id:['']
+      aluno_id: ['']
     })
   }
 
-  public getProfessor(): void {
-    this.supabaseService.getTeachers().then((res)=> {
-      if(res.data){
+  public getTeachers(): void {
+    this.teacherService.getTeachers().then((res) => {
+      if (res.data) {
         this.professores = res.data
       }
     });
@@ -76,16 +83,16 @@ export class DashboardAddComponent implements OnInit {
 
       tcc.aluno_id = this.id;
 
-      this.supabaseService.uploadTCC(filePath, file).then((res): void => {
-        console.log(res)
+      this.tccService.createPDF(filePath, file).then((res): void => {
         if (res.data) {
           const pdf: string = res.data.path;
-          this.supabaseService.salvePDF(tcc.titulo, tcc.descricao, pdf, tcc.orientador,  tcc.aluno_id).then((res) => {
-            console.log(res)
+          this.tccService.createTcc(tcc.titulo, tcc.descricao, pdf, tcc.orientador,  tcc.aluno_id).then((res) => {
           })
         }
       }).catch((error) => {
         console.log(error)
+      }).finally(()=> {
+        this.closeDialog();
       })
     } else {
       console.warn('Preencha todos os campos e selecione um arquivo!');
@@ -99,18 +106,17 @@ export class DashboardAddComponent implements OnInit {
   }
 
   public closeDialog(): void {
-
+    this.closeDialogEmitter.emit();
   }
 
   public getUser() {
-    this.supabaseService.getUser().then((res) => {
-      if (res.data.user && res.data.user.id) {
-        this.id = res.data.user.id
+    this.supabaseService.getUser().then((res: User) => {
+      if (res && res.id) {
+        this.id = res.id;
       }
-    }).catch(() => {
-
+    }).catch((error) => {
+      console.log(error)
     }).finally(() => {
-
     })
   }
 }

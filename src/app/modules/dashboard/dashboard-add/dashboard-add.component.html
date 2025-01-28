@@ -12,7 +12,7 @@
     </p-floatlabel>
   </div>
   <div class="my-2">
-    <p-select [options]="professores" formControlName="orientador" optionLabel="nome" placeholder="Selecione seu orientador" styleClass="w-full"></p-select>
+    <p-select [options]="professores" formControlName="orientador" optionLabel="nome" optionValue="id" placeholder="Selecione seu orientador" styleClass="w-full"       appendTo="body"></p-select>
   </div>
   <div class="my-2">
     <p-fileupload #fu mode="basic" chooseLabel="Upload TCC"  name="demo[]" accept="application/pdf" maxFileSize="1000000" (onSelect)="onUpload($event)" />

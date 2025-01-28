@@ -16,8 +16,16 @@ export const routes: Routes = [
         loadComponent: () => import('./modules/dashboard/dashboard.component').then(m => m.DashboardComponent),
       },
       {
+        path: 'advisor',
+        loadComponent: () => import('./modules/advisor/advisor.component').then(m => m.AdvisorComponent),
+      },
+      {
         path: 'bank',
         loadComponent: () => import('./modules/bank/bank.component').then(m => m.BankComponent),
+      },
+      {
+        path: 'assessment',
+        loadComponent: () => import('./modules/assessment/assessment.component').then(m => m.AssessmentComponent),
       },
       {
         path: '',

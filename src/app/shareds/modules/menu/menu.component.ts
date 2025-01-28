@@ -44,18 +44,17 @@ const itensMenus: any[] = [
   {
     icon: 'dashboard',
     name: 'Dashboard',
-    route: '/dashboard',
-  },
-  {
-    icon: 'cast_for_education',
-    name: 'Professores',
-    route: '/teacher',
-
+    route: 'dashboard',
   },
   {
     icon: 'draft_orders',
-    name: 'Orientador',
-    route: '/bank',
+    name: 'Dashboard',
+    route: 'advisor',
+  },
+  {
+    icon: 'account_balance',
+    name: 'Banca',
+    route: 'bank',
   },
   {
     icon: 'logout',

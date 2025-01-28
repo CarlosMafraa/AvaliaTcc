@@ -4,6 +4,9 @@ import {Button} from 'primeng/button';
 import {InformationComponent} from '../information/information.component';
 import {DashboardAddComponent} from './dashboard-add/dashboard-add.component';
 import {SupabaseService} from '../../services/supabase/supabase.service';
+import {UserResponse} from '@supabase/supabase-js';
+import {User} from '../../shareds/interfaces/User';
+import {Tcc} from '../../shareds/interfaces/Tcc';
 
 @Component({
   standalone: true,
@@ -18,9 +21,9 @@ import {SupabaseService} from '../../services/supabase/supabase.service';
   styleUrl: './dashboard.component.scss'
 })
 export class DashboardComponent implements OnInit {
-  public listTcc: any[] = [];
+  public listTcc: Tcc[] = [];
   public dialog: boolean = false;
-  public id!: string;
+  public id!: number;
 
   private supabaseService: SupabaseService = inject(SupabaseService);
 
@@ -28,8 +31,8 @@ export class DashboardComponent implements OnInit {
     this.getUser();
   }
 
-  public listTccUser(id: string) {
-    this.supabaseService.getTCCsDoUsuario(id)?.then((res) => {
+  public listTccUser(id: number) {
+    this.supabaseService.getTCCsById(id).then((res) => {
       if(res.data){
         this.listTcc = res.data
       }
@@ -37,12 +40,12 @@ export class DashboardComponent implements OnInit {
   }
 
   public getUser() {
-    this.supabaseService.getUser().then((res) => {
-      if (res.data.user && res.data.user.id) {
-        this.id = res.data.user.id
+    this.supabaseService.getUser().then((res: User) => {
+      if (res && res.id) {
+        this.id = res.id;
       }
-    }).catch(() => {
-
+    }).catch((error) => {
+      console.log(error)
     }).finally(() => {
       this.listTccUser(this.id);
     })
@@ -54,6 +57,7 @@ export class DashboardComponent implements OnInit {
 
   public closeDialog(): void {
     this.dialog = false;
+    this.listTccUser(this.id);
   }
 }
 

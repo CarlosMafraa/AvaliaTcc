@@ -17,7 +17,7 @@ export class HomeComponent implements OnInit{
   public supabaseService:SupabaseService = inject(SupabaseService)
 
   ngOnInit() {
-    this.supabaseService.getToken();
+    // this.supabaseService.getToken();
   }
 
 }
