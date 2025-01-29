@@ -21,7 +21,6 @@ import {TeacherService} from '../../../services/supabase/teacher/teacher.service
     FileUpload,
     Button,
     InputText,
-    MultiSelect
   ],
   templateUrl: './dashboard-add.component.html',
   styleUrl: './dashboard-add.component.scss'

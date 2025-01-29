@@ -1,4 +1,4 @@
-import {Component, inject, Input, OnInit} from '@angular/core';
+import {Component, EventEmitter, inject, Input, OnInit, Output} from '@angular/core';
 import {Button} from 'primeng/button';
 import {SupabaseService} from '../../services/supabase/supabase.service';
 import {Dialog} from 'primeng/dialog';
@@ -6,6 +6,7 @@ import {BankAddComponent} from '../bank/bank-add/bank-add.component';
 import {TeacherService} from '../../services/supabase/teacher/teacher.service';
 import {TccService} from '../../services/supabase/tcc/tcc.service';
 import {AdvisorAddComponent} from '../advisor/advisor-add/advisor-add.component';
+import {AdvisorService} from '../../services/supabase/advisor/advisor.service';
 
 @Component({
   standalone: true,
@@ -13,8 +14,8 @@ import {AdvisorAddComponent} from '../advisor/advisor-add/advisor-add.component'
   imports: [
     Button,
     Dialog,
-    BankAddComponent,
-    AdvisorAddComponent
+    AdvisorAddComponent,
+    BankAddComponent
   ],
   templateUrl: './information.component.html',
   styleUrl: './information.component.scss'
@@ -27,30 +28,33 @@ export class InformationComponent implements OnInit {
   @Input() public banca_id!: number | null;
   @Input() public orientador_id!: number;
   @Input() public advisor: boolean = false;
+  @Input() public bank: boolean = false;
 
-  public visible: boolean = false;
+  @Output() public refreshEmitter: EventEmitter<any> = new EventEmitter<any>()
+
+  public visibleBanca: boolean = false;
+  public visibleNotas: boolean = false;
   public orientador!: string;
-  public banca: string[] = [];
+  public banca: any[] = [];
 
   private tccService: TccService = inject(TccService);
   private teacherService: TeacherService = inject(TeacherService);
+  private advisorService: AdvisorService = inject(AdvisorService);
 
   ngOnInit() {
-    this.getTeacherById(this.orientador_id)
+    this.getTeacherById(this.orientador_id);
+    console.log(this.id)
+    this.getBank(this.id);
   }
 
   public openDialog(): void {
     this.visible = true;
   }
 
-  public closeDialog(): void {
-    this.visible = false;
-  }
-
   public getTeacherById(id: number) {
-    if(id){
+    if (id) {
       this.teacherService.getTeacherById(id).then((res) => {
-        if(res && res.data){
+        if (res && res.data) {
           this.orientador = res.data[0].nome;
         }
       })
@@ -99,5 +103,43 @@ export class InformationComponent implements OnInit {
     }).catch((error) => {
       console.log('Erro ao visualizar o PDF:', error);
     });
+  }
+
+  public getBank(tcc_id: number): void {
+    this.advisorService.getBanca(tcc_id).then((res) => {
+      if (res && res.data) {
+        this.advisorService.getMembroBanca(res.data.id).then((resp) => {
+          if (resp.data) {
+            this.banca = [];
+            resp.data.forEach((membro: any) => {
+              this.teacherService.getTeacherById(membro.professor_id).then((teacherRes) => {
+                if (teacherRes.data && teacherRes.data.length > 0) {
+                  const professor: string = teacherRes.data[0].nome + ' ' + teacherRes.data[0].sobrenome;
+                  console.log(professor)
+                  this.banca.push(professor);
+                  this.advisor = false;
+                }
+              });
+            });
+          }
+        });
+      }
+    });
+  }
+
+  public openDialogBanca(): void {
+    this.visibleBanca = true;
+  }
+  public openDialogNotas(): void {
+    this.visibleNotas = true;
+  }
+
+  public closeDialogBanca(): void {
+    this.visibleBanca = false;
+    this.refreshEmitter.emit();
+  }
+  public closeDialogNotas(): void {
+    this.visibleNotas = false;
+    this.refreshEmitter.emit();
   }
 }

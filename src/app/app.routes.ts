@@ -1,6 +1,5 @@
 import { Routes } from '@angular/router';
 import {authGuard} from './services/auth/auth.guard';
-import {BankComponent} from './modules/bank/bank.component';
 
 export const routes: Routes = [
   {
@@ -22,10 +21,6 @@ export const routes: Routes = [
       {
         path: 'bank',
         loadComponent: () => import('./modules/bank/bank.component').then(m => m.BankComponent),
-      },
-      {
-        path: 'assessment',
-        loadComponent: () => import('./modules/assessment/assessment.component').then(m => m.AssessmentComponent),
       },
       {
         path: '',

@@ -9,10 +9,7 @@ import {Button} from 'primeng/button';
   standalone: true,
   selector: 'app-bank-add',
   imports: [
-    MultiSelect,
     ReactiveFormsModule,
-    FloatLabel,
-    Button
   ],
   templateUrl: './bank-add.component.html',
   styleUrl: './bank-add.component.scss'

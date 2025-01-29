@@ -5,6 +5,8 @@ import {FloatLabel} from 'primeng/floatlabel';
 import {MultiSelect} from 'primeng/multiselect';
 import {Button} from 'primeng/button';
 import {TeacherService} from '../../../services/supabase/teacher/teacher.service';
+import {AdvisorService} from '../../../services/supabase/advisor/advisor.service';
+import {TccService} from '../../../services/supabase/tcc/tcc.service';
 
 @Component({
   standalone: true,
@@ -18,8 +20,8 @@ import {TeacherService} from '../../../services/supabase/teacher/teacher.service
   templateUrl: './advisor-add.component.html',
   styleUrl: './advisor-add.component.scss'
 })
-export class AdvisorAddComponent implements OnInit{
-  @Input() public id: number = 0;
+export class AdvisorAddComponent implements OnInit {
+  @Input() public tcc_id!: number;
   @Output() public closeDialogEmitter: EventEmitter<any> = new EventEmitter<any>()
 
   public formGroup: FormGroup = new FormGroup({});
@@ -27,7 +29,8 @@ export class AdvisorAddComponent implements OnInit{
 
   private formBuilder: FormBuilder = inject(FormBuilder);
   private teacherService: TeacherService = inject(TeacherService);
-  private supabaseService: SupabaseService = inject(SupabaseService);
+  private advisorService: AdvisorService = inject(AdvisorService);
+  private tccService: TccService = inject(TccService);
 
   ngOnInit() {
     this.initForm();
@@ -36,18 +39,30 @@ export class AdvisorAddComponent implements OnInit{
 
   public initForm(): void {
     this.formGroup = this.formBuilder.group({
-      banca: this.formBuilder.control([], Validators.required)
+      banca: this.formBuilder.control([], [Validators.required])
     })
   }
 
   public salve(): void {
     if (this.formGroup.valid) {
       const {banca} = this.formGroup.value;
-      console.log(banca)
-      console.log(this.id)
-      // this.supabaseService.updateBanca(this.id, banca).then((res) => {
-      //   console.log(res);
-      // })
+
+      this.advisorService.createBanca(this.tcc_id).then((res) => {
+        if (res.data) {
+          const bancaId = res.data.id;
+
+          banca.forEach((professor_id: number) => {
+            this.advisorService.createMembroBanca(bancaId, professor_id).then((membro) => {
+              console.log('Membro da banca associado:', membro);
+            })
+          })
+          this.tccService.updateTcc(this.tcc_id, bancaId).then((res) => {
+            console.log(res)
+          })
+        }
+      })
+      this.closeDialog();
+      this.formGroup.reset();
     }
   }
 

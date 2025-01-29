@@ -34,7 +34,7 @@ export class DashboardComponent implements OnInit {
   }
 
   public listTccUser(id: number) {
-    this.tccService.getTCCsById(id).then((res) => {
+    this.tccService.getTCCsAlunosById(id).then((res) => {
       if(res.data){
         this.listTcc = res.data
       }

@@ -49,7 +49,6 @@ export class SupabaseService {
         return this.supabase.from('users').select().eq('user_id', userAuthId).then((res) => {
           {
             if (res.data && res.data.length > 0) {
-              console.log('User_tabela', res)
               return res.data[0];
             } else {
               throw new Error('Usuário não encontrado na tabela users');

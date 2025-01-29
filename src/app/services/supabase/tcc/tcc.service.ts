@@ -34,12 +34,20 @@ export class TccService {
     return this.supabase.storage.from('tccs_files').download(path);
   }
 
-  public getTCCsById(id: number) {
+  public getTCCsAlunosById(id: number) {
     return this.supabase.from('tccs').select().eq('aluno_id', id);
   }
 
   public getTCCsByIdAdvisor(id: number) {
     return this.supabase.from('tccs').select().eq('orientador_id', id);
+  }
+
+  public updateTcc(tcc_id: number, banca_id: number){
+    return this.supabase.from('tccs').update({'banca_id': banca_id}).eq('id',tcc_id)
+  }
+
+  public getTCCsById(tcc_id: number) {
+    return this.supabase.from('tccs').select().eq('id', tcc_id);
   }
 
 

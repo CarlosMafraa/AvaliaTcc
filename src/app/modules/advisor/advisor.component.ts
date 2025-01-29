@@ -4,12 +4,14 @@ import {InformationComponent} from '../information/information.component';
 import {User} from '../../shareds/interfaces/User';
 import {SupabaseService} from '../../services/supabase/supabase.service';
 import {TccService} from '../../services/supabase/tcc/tcc.service';
+import {Dialog} from "primeng/dialog";
+import {AdvisorAddComponent} from './advisor-add/advisor-add.component';
 
 @Component({
   standalone: true,
   selector: 'app-advisor',
   imports: [
-    InformationComponent
+    InformationComponent,
   ],
   templateUrl: './advisor.component.html',
   styleUrl: './advisor.component.scss'
@@ -20,6 +22,8 @@ export class AdvisorComponent implements OnInit {
 
   private supabaseService: SupabaseService = inject(SupabaseService);
   private tccService: TccService = inject(TccService);
+
+  public dialog: boolean = false;
 
   ngOnInit() {
     this.getUser();
@@ -45,4 +49,7 @@ export class AdvisorComponent implements OnInit {
     })
   }
 
+  public closeDialog() : void {
+    this.dialog = false
+  }
 }

@@ -45,7 +45,16 @@
     </div>
     @if (advisor) {
       <div>
-        <p-button label="Adicionar Banca" (click)="openDialog()">
+        <p-button label="Adicionar Banca" (click)="openDialogBanca()">
+          <span class="material-symbols-outlined">
+            add_circle
+          </span>
+        </p-button>
+      </div>
+    }
+    @if (bank) {
+      <div>
+        <p-button label="Adicionar Notas" (click)="openDialogNotas()">
           <span class="material-symbols-outlined">
             add_circle
           </span>
@@ -56,8 +65,17 @@
 </div>
 
 <p-dialog header="Adicionar Banca" [modal]="true"
-          [(visible)]="visible"
+          [(visible)]="visibleBanca"
           [style]="{ width: '50rem' }"
-          (onHide)="closeDialog()">
-  <app-advisor-add [id]=orientador_id (closeDialogEmitter)=closeDialog()></app-advisor-add>
+          (onHide)="closeDialogBanca()">
+  <app-advisor-add [tcc_id]=id (closeDialogEmitter)=closeDialogBanca()></app-advisor-add>
 </p-dialog>
+
+<p-dialog header="Adicionar Notas" [modal]="true"
+          [(visible)]="visibleNotas"
+          [style]="{ width: '50rem' }"
+          (onHide)="closeDialogNotas()">
+  <app-bank-add [tcc_id]=id (closeDialogEmitter)=closeDialogNotas()></app-bank-add>
+</p-dialog>
+
+

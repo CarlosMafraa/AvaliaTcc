@@ -15,11 +15,4 @@ export class MenuItemComponent {
   @Input() public name!: string;
   @Input() public route!: string;
 
-  // private router: Router = inject(Router);
-  //
-  //
-  // openRouter(rota: string) {
-  //   console.log(rota)
-  //   this.router.navigate([rota]).then();
-  // }
 }

@@ -21,7 +21,7 @@ export class MenuComponent {
   private router: Router = inject(Router);
 
   public navigate(route: string) {
-    this.router.navigate([route]).then();
+    this.router.navigate(['/home/'+route]).then();
   }
 
   public handleAction(action: string) {
