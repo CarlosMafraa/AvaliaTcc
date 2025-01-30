@@ -1,5 +1,5 @@
 import {Component, inject, OnInit} from '@angular/core';
-import {RouterOutlet} from '@angular/router';
+import {Router, RouterOutlet} from '@angular/router';
 import {MenuComponent} from '../menu/menu.component';
 import {SupabaseService} from '../../../services/supabase/supabase.service';
 
@@ -13,11 +13,16 @@ import {SupabaseService} from '../../../services/supabase/supabase.service';
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss'
 })
-export class HomeComponent implements OnInit{
-  public supabaseService:SupabaseService = inject(SupabaseService)
+export class HomeComponent implements OnInit {
+  public router: Router = inject(Router)
 
   ngOnInit() {
-    // this.supabaseService.getToken();
+    const userProfile: string | null = localStorage.getItem('user_perfil')
+    if (userProfile && userProfile === 'aluno') {
+      this.router.navigate(['/home/dashboard']).then();
+    } else if (userProfile === 'professor') {
+      this.router.navigate(['/home/advisor']).then();
+    }
   }
 
 }

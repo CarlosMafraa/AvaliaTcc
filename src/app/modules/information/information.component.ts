@@ -7,6 +7,10 @@ import {TeacherService} from '../../services/supabase/teacher/teacher.service';
 import {TccService} from '../../services/supabase/tcc/tcc.service';
 import {AdvisorAddComponent} from '../advisor/advisor-add/advisor-add.component';
 import {AdvisorService} from '../../services/supabase/advisor/advisor.service';
+import {User} from '../../shareds/interfaces/User';
+import {BankService} from '../../services/supabase/bank/bank.service';
+import {Knob} from 'primeng/knob';
+import {FormsModule} from '@angular/forms';
 
 @Component({
   standalone: true,
@@ -15,18 +19,22 @@ import {AdvisorService} from '../../services/supabase/advisor/advisor.service';
     Button,
     Dialog,
     AdvisorAddComponent,
-    BankAddComponent
+    BankAddComponent,
+    Knob,
+    FormsModule
   ],
   templateUrl: './information.component.html',
   styleUrl: './information.component.scss'
 })
 export class InformationComponent implements OnInit {
-  @Input() public id!: number;
+  @Input() public tcc_id!: number;
+  @Input() public user_id!: number;
+  @Input() public orientador_id!: number;
   @Input() public titulo!: string;
   @Input() public descricao!: string;
   @Input() public pdfUrl!: string;
   @Input() public banca_id!: number | null;
-  @Input() public orientador_id!: number;
+  @Input() public tcc_media!: number | null;
   @Input() public advisor: boolean = false;
   @Input() public bank: boolean = false;
 
@@ -37,19 +45,21 @@ export class InformationComponent implements OnInit {
   public orientador!: string;
   public banca: any[] = [];
 
+
   private tccService: TccService = inject(TccService);
   private teacherService: TeacherService = inject(TeacherService);
   private advisorService: AdvisorService = inject(AdvisorService);
+  private supabaseService: SupabaseService = inject(SupabaseService);
+  private bankService: BankService = inject(BankService);
 
   ngOnInit() {
     this.getTeacherById(this.orientador_id);
-    console.log(this.id)
-    this.getBank(this.id);
+    console.log(this.tcc_id)
+    this.getBank(this.tcc_id);
+    this.calcularMediaESalvarNoTCC(this.tcc_id);
+
   }
 
-  public openDialog(): void {
-    this.visible = true;
-  }
 
   public getTeacherById(id: number) {
     if (id) {
@@ -108,7 +118,8 @@ export class InformationComponent implements OnInit {
   public getBank(tcc_id: number): void {
     this.advisorService.getBanca(tcc_id).then((res) => {
       if (res && res.data) {
-        this.advisorService.getMembroBanca(res.data.id).then((resp) => {
+        console.log(res)
+        this.advisorService.getMembroBanca(res.data.id).then(async (resp) => {
           if (resp.data) {
             this.banca = [];
             resp.data.forEach((membro: any) => {
@@ -121,6 +132,11 @@ export class InformationComponent implements OnInit {
                 }
               });
             });
+            const notasExist: boolean = await this.bankService.checkIfNotasExist(res.data.id, this.user_id);
+            if (notasExist) {
+              this.bank = false;
+            }
+            this.advisor = false;
           }
         });
       }
@@ -130,6 +146,7 @@ export class InformationComponent implements OnInit {
   public openDialogBanca(): void {
     this.visibleBanca = true;
   }
+
   public openDialogNotas(): void {
     this.visibleNotas = true;
   }
@@ -138,8 +155,59 @@ export class InformationComponent implements OnInit {
     this.visibleBanca = false;
     this.refreshEmitter.emit();
   }
+
   public closeDialogNotas(): void {
     this.visibleNotas = false;
     this.refreshEmitter.emit();
+  }
+
+  public async calcularMediaESalvarNoTCC(tcc_id: number): Promise<void> {
+    try {
+      // Passo 1: Buscar a banca pelo tcc_id
+      const bancaResponse = await this.advisorService.getBanca(tcc_id);
+      if (!bancaResponse || !bancaResponse.data) {
+        throw new Error('Banca não encontrada para o TCC fornecido.');
+      }
+
+      const bancaId = bancaResponse.data.id;
+
+      // Passo 2: Buscar os membros da banca
+      const membrosResponse = await this.advisorService.getMembroBanca(bancaId);
+      if (!membrosResponse || !membrosResponse.data) {
+        throw new Error('Membros da banca não encontrados.');
+      }
+
+      const membros = membrosResponse.data;
+
+      // Passo 3: Recuperar as notas de cada membro da banca
+      let somaNotas = 0;
+      let quantidadeNotas = 0;
+
+      for (const membro of membros) {
+        const notasResponse = await this.bankService.getNotas(bancaId, membro.professor_id);
+        if (notasResponse && notasResponse.data) {
+          const notas = notasResponse.data;
+          console
+          // Soma as 5 notas do professor
+          somaNotas += notas.nota1 + notas.nota2 + notas.nota3 + notas.nota4 + notas.nota5;
+          quantidadeNotas += 1; // Cada professor tem 5 notas
+        }
+      }
+
+      // Passo 4: Calcular a média
+      if (quantidadeNotas === 0) {
+        throw new Error('Nenhuma nota encontrada para cálculo da média.');
+      }
+      console.log(quantidadeNotas)
+      const media: number = (somaNotas / quantidadeNotas) * 10;
+
+      // Passo 5: Salvar a média no TCC
+      await this.tccService.updateMedia(tcc_id, media);
+
+      console.log(`Média calculada e salva no TCC: ${media}`);
+    } catch (error) {
+      console.error('Erro ao calcular a média e salvar no TCC:', error);
+    }
+
   }
 }

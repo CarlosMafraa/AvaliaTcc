@@ -13,20 +13,24 @@ export const routes: Routes = [
       {
         path: 'dashboard',
         loadComponent: () => import('./modules/dashboard/dashboard.component').then(m => m.DashboardComponent),
+        data: {
+          perfis: ['aluno']
+        }
       },
       {
         path: 'advisor',
         loadComponent: () => import('./modules/advisor/advisor.component').then(m => m.AdvisorComponent),
+        data: {
+          perfis: ['professor']
+        }
       },
       {
         path: 'bank',
         loadComponent: () => import('./modules/bank/bank.component').then(m => m.BankComponent),
+        data: {
+          perfis: ['professor']
+        }
       },
-      {
-        path: '',
-        redirectTo: 'dashboard',
-        pathMatch: 'full'
-      }
     ]
   },
   {

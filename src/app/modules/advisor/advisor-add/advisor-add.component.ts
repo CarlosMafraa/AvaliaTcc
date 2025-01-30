@@ -43,7 +43,7 @@ export class AdvisorAddComponent implements OnInit {
     })
   }
 
-  public salve(): void {
+  public save(): void {
     if (this.formGroup.valid) {
       const {banca} = this.formGroup.value;
 

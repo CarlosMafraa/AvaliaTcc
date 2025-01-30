@@ -4,9 +4,7 @@ import {Router, RouterLink} from '@angular/router';
 @Component({
   standalone: true,
   selector: 'app-menu-item',
-  imports: [
-    RouterLink
-  ],
+  imports: [],
   templateUrl: './menu-item.component.html',
   styleUrl: './menu-item.component.scss'
 })

@@ -30,7 +30,8 @@ export class SupabaseService {
 
 
   public signOut() {
-    return this.supabase.auth.signOut()
+    localStorage.clear();
+    return this.supabase.auth.signOut();
   }
 
 
@@ -42,25 +43,27 @@ export class SupabaseService {
 
 
 
-  public getUser() {
-    return this.getUserAuth().then((res: UserResponse) => {
-      if (res.data.user && res.data.user.id) {
-        const userAuthId: string = res.data.user.id;
-        return this.supabase.from('users').select().eq('user_id', userAuthId).then((res) => {
-          {
-            if (res.data && res.data.length > 0) {
-              return res.data[0];
-            } else {
-              throw new Error('Usuário não encontrado na tabela users');
-            }
-          }
-        })
-      } else {
-        throw new Error('Erro ao obter usuário autenticado');
+  public async getUser(): Promise<any> {
+    const userAuth = await this.getUserAuth();
+    if (userAuth.data.user && userAuth.data.user.id) {
+      const userAuthId: string = userAuth.data.user.id;
+      const { data, error } = await this.supabase
+        .from('users')
+        .select('*')
+        .eq('user_id', userAuthId);
+
+      if (error) {
+        throw new Error('Erro ao buscar usuário na tabela users');
       }
-    }).catch((error) => {
-      console.log('Erro ao obter usuário:', error)
-    }).finally(() => {})
+
+      if (data && data.length > 0) {
+        return data[0]; // Retorna as informações do usuário
+      } else {
+        throw new Error('Usuário não encontrado na tabela users');
+      }
+    } else {
+      throw new Error('Erro ao obter usuário autenticado');
+    }
   }
 
   public getUserAuth() {

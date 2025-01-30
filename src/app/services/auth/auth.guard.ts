@@ -1,11 +1,18 @@
-import { CanActivateFn } from '@angular/router';
+import {CanActivateFn, Router} from '@angular/router';
 import {inject} from '@angular/core';
-import {SupabaseService} from '../supabase/supabase.service';
 
 export const authGuard: CanActivateFn = (route, state) => {
-   const supabaseService: SupabaseService = inject(SupabaseService);
-
-  return true
+  const router: Router = inject(Router);
+  const user_perfil: string = localStorage.getItem('user_perfil') || '';
+  if (!user_perfil) {
+    router.navigate(['/login']).then();
+    return false;
+  }
+  if (route.data['perfis'] && !route.data['perfis'].includes(user_perfil)) {
+    router.navigate(['/home']).then();
+    return false;
+  }
+  return true;
 };
 
 

@@ -18,6 +18,7 @@ export class TccService {
         pdf: pdf,
         orientador_id: orientador,
         aluno_id: aluno_id,
+        media: 0
       }
     ])
   }
@@ -48,6 +49,10 @@ export class TccService {
 
   public getTCCsById(tcc_id: number) {
     return this.supabase.from('tccs').select().eq('id', tcc_id);
+  }
+
+  async updateMedia(tcc_id: number, media: number) {
+    return this.supabase.from('tccs').update( { 'media': media }).eq('id',tcc_id);
   }
 
 

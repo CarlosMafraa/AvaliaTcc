@@ -36,13 +36,11 @@ export class DashboardAddComponent implements OnInit {
   private formBuilder: FormBuilder = inject(FormBuilder);
   private tccService: TccService = inject(TccService);
   private teacherService: TeacherService = inject(TeacherService);
-  private supabaseService: SupabaseService = inject(SupabaseService);
 
 
   ngOnInit(): void {
     this.initForm();
     this.getTeachers();
-    this.getUser();
   }
 
   public initForm(): void {
@@ -62,7 +60,7 @@ export class DashboardAddComponent implements OnInit {
     });
   }
 
-  public async salve(): Promise<void> {
+  public async save(): Promise<void> {
     if (this.formGroup.valid && this.selectedFile) {
       const tcc = this.formGroup.getRawValue();
 
@@ -107,14 +105,4 @@ export class DashboardAddComponent implements OnInit {
     this.closeDialogEmitter.emit();
   }
 
-  public getUser() {
-    this.supabaseService.getUser().then((res: User) => {
-      if (res && res.id) {
-        this.id = res.id;
-      }
-    }).catch((error) => {
-      console.log(error)
-    }).finally(() => {
-    })
-  }
 }

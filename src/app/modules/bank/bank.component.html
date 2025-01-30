@@ -5,13 +5,16 @@
   <div>
     <div>
       @for (tcc of listTcc; track tcc) {
-        <app-information [id]="tcc.id"
+        <app-information [tcc_id]="tcc.id"
                          [titulo]="tcc.titulo"
                          [descricao]="tcc.descricao"
                          [pdfUrl]="tcc.pdf"
                          [banca_id]="tcc.banca_id"
                          [orientador_id]="tcc.orientador_id"
                          [bank]="true"
+                         [user_id]="user_id"
+                         [tcc_media] = tcc.media
+                         (refreshEmitter)="this.getBancaMembro(this.user_id)"
         ></app-information>
       }
     </div>

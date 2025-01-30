@@ -24,7 +24,7 @@ import {TccService} from '../../services/supabase/tcc/tcc.service';
 export class DashboardComponent implements OnInit {
   public listTcc: Tcc[] = [];
   public dialog: boolean = false;
-  public id!: number;
+  public user_id!: number;
 
   private supabaseService: SupabaseService = inject(SupabaseService);
   private tccService: TccService = inject(TccService);
@@ -33,7 +33,7 @@ export class DashboardComponent implements OnInit {
     this.getUser();
   }
 
-  public listTccUser(id: number) {
+  public getTccUser(id: number) {
     this.tccService.getTCCsAlunosById(id).then((res) => {
       if(res.data){
         this.listTcc = res.data
@@ -42,15 +42,11 @@ export class DashboardComponent implements OnInit {
   }
 
   public getUser() {
-    this.supabaseService.getUser().then((res: User) => {
-      if (res && res.id) {
-        this.id = res.id;
-      }
-    }).catch((error) => {
-      console.log(error)
-    }).finally(() => {
-      this.listTccUser(this.id);
-    })
+    const user_id: number = Number(localStorage.getItem('user_id'));
+    if(user_id){
+      this.user_id = user_id;
+      this.getTccUser(user_id);
+    }
   }
 
   public openDialog(): void {
@@ -59,7 +55,7 @@ export class DashboardComponent implements OnInit {
 
   public closeDialog(): void {
     this.dialog = false;
-    this.listTccUser(this.id);
+    this.getTccUser(this.user_id);
   }
 }
 

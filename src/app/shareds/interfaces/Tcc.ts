@@ -7,6 +7,7 @@ export interface Tcc {
   aluno_id: number;
   banca_id: number | null;
   resultado_id: number | null;
+  media: number | null;
   status: string | null;
   created_at: string;
   updated_at: string;

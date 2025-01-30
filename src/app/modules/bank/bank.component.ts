@@ -18,7 +18,7 @@ import {AdvisorService} from '../../services/supabase/advisor/advisor.service';
 })
 export class BankComponent implements OnInit {
   public listTcc: Tcc[] = [];
-  public id!: number;
+  public user_id!: number;
 
   private supabaseService: SupabaseService = inject(SupabaseService);
   private tccService: TccService = inject(TccService);
@@ -31,15 +31,11 @@ export class BankComponent implements OnInit {
   }
 
   public getUser() {
-    this.supabaseService.getUser().then((res: User) => {
-      if (res && res.id) {
-        this.id = res.id;
-        this.getBancaMembro(this.id);
-      }
-    }).catch((error) => {
-      console.log(error)
-    }).finally(() => {
-    })
+    const user_id: number = Number(localStorage.getItem('user_id'));
+    if(user_id){
+      this.user_id = user_id;
+      this.getBancaMembro(user_id);
+    }
   }
 
   public getBancaMembro(professor_id: number){
@@ -64,6 +60,7 @@ export class BankComponent implements OnInit {
     })
 
   }
+
 
 
 

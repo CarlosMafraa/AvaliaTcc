@@ -13,11 +13,14 @@
   </div>
   <div>
     @for (tcc of listTcc; track tcc) {
-      <app-information [titulo]="tcc.titulo"
+      <app-information [tcc_id]="tcc.id"
+                       [titulo]="tcc.titulo"
                        [descricao]="tcc.descricao"
                        [pdfUrl]="tcc.pdf"
                        [banca_id]="tcc.banca_id"
                        [orientador_id]="tcc.orientador_id"
+                       [tcc_media] = tcc.media
+                       (refreshEmitter)="this.getTccUser(this.user_id)"
       ></app-information>
     }
   </div>

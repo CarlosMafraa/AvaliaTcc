@@ -18,7 +18,7 @@ import {AdvisorAddComponent} from './advisor-add/advisor-add.component';
 })
 export class AdvisorComponent implements OnInit {
   public listTcc: Tcc[] = [];
-  public id!: number;
+  public user_id!: number;
 
   private supabaseService: SupabaseService = inject(SupabaseService);
   private tccService: TccService = inject(TccService);
@@ -30,15 +30,11 @@ export class AdvisorComponent implements OnInit {
   }
 
   public getUser() {
-    this.supabaseService.getUser().then((res: User) => {
-      if (res && res.id) {
-        this.id = res.id;
-      }
-    }).catch((error) => {
-      console.log(error)
-    }).finally(() => {
-      this.listTccAdvisor(this.id);
-    })
+    const user_id: number = Number(localStorage.getItem('user_id'));
+    if(user_id){
+      this.user_id = user_id;
+      this.listTccAdvisor(user_id);
+    }
   }
 
   public listTccAdvisor(id: number) {
